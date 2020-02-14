@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Sharepoint Extraction", "Sharepoint Extraction\Sharepoint Extraction.pyproj", "{0B6F4F99-2AA4-410A-91EF-3CD064B94903}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B6F4F99-2AA4-410A-91EF-3CD064B94903}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B6F4F99-2AA4-410A-91EF-3CD064B94903}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D0F0849F-BFB8-4F9A-9EA5-0510FDB94C9A}
+	EndGlobalSection
+EndGlobal
