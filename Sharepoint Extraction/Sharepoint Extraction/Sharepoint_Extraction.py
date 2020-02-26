@@ -2,42 +2,50 @@ import argparse
 import urllib.parse
 import os
 import requests
-from requests.auth import HTTPBasicAuth
+from requests_ntlm3 import HttpNtlmAuth
 
-parser = argparse.ArgumentParser()
-parser.add_argument('server')
-parser.add_argument('username')
-parser.add_argument('password')
-args = parser.parse_args()
-server = urllib.parse.urljoin(args.server,'/')
+API_GETFILEURI = "_api/Web/GetFileByServerRelativeUrl('/"
+API_GETFOLDERURI = "_api/Web/GetFolderByServerRelativeUrl('/"
 
-auth = HTTPBasicAuth(args.username, args.password)
-headers = {'accept': 'application/json;odata=verbose'}
+PARSER = argparse.ArgumentParser()
+PARSER.add_argument('-s', '--server', default="http://sharepoint")
+PARSER.add_argument('-u', '--username', required=True)
+PARSER.add_argument('-p', '--password', required=True)
+ARGS = PARSER.parse_args()
+SERVER = urllib.parse.urljoin(ARGS.server, '/')
+
+AUTH = HttpNtlmAuth(ARGS.username, ARGS.password)
+HEADERS = {'accept': 'application/json;odata=verbose'}
 
 def make_request(url):
-    r = requests.get(url, auth=auth, headers=headers)
-    return r.json()
+    response = requests.get(url, auth=AUTH, headers=HEADERS)
+    if response.status_code == 200:
+        return response.json()
+    return None
 
 def download_file(filename):
     filename = filename.strip('/')
     print('Downloading\t'+filename)
-    r = requests.get(server+"_api/Web/GetFileByServerRelativeUrl('/"+filename+"')/$value", auth=auth, stream=True)
-    with open(filename, 'wb+') as f:
-        for chunk in r.iter_content(chunk_size=1024): 
+    response = requests.get(SERVER+API_GETFILEURI+filename+"')/$value", auth=AUTH, stream=True)
+    with open(filename, 'wb+') as f_stream:
+        for chunk in response.iter_content(chunk_size=8192):
             if chunk:
-                f.write(chunk)
-                f.flush()
+                f_stream.write(chunk)
+                f_stream.flush()
 
 def check_directory(path):
     path = path.strip('/')
     print('Checking\t'+path)
-    if not os.path.exists(path):
-        os.makedirs(path)
-    folders = make_request(server+"_api/Web/GetFolderByServerRelativeUrl('/"+path+"')/Folders")['d']['results']
-    for folder in folders:
-        check_directory(folder['ServerRelativeUrl'])
-    files = make_request(server+"_api/Web/GetFolderByServerRelativeUrl('/"+path+"')/Files")['d']['results']
-    for file in files:
-        download_file(file['ServerRelativeUrl'])
+    os.makedirs(path, exist_ok=True)
+    response = make_request(SERVER+API_GETFOLDERURI+path+"')/Folders")
+    if response is not None:
+        folders = response['d']['results']
+        for folder in folders:
+            check_directory(folder['ServerRelativeUrl'])
+    response = make_request(SERVER+API_GETFOLDERURI+path+"')/Files")
+    if response is not None:
+        files = response['d']['results']
+        for file in files:
+            download_file(file['ServerRelativeUrl'])
 
 check_directory('/Shared Documents')

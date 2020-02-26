@@ -4,13 +4,16 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>0b6f4f99-2aa4-410a-91ef-3cd064b94903</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Sharepoint_Extraction.py</StartupFile>
+    <StartupFile>sharepoint_extraction.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Sharepoint Extraction</Name>
     <RootNamespace>Sharepoint Extraction</RootNamespace>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <CommandLineArguments>-u 'HSI\ajans' -p 'cH3wyM0ck!ngb!rd'</CommandLineArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,13 +24,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="class_storage.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="extraction.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Sharepoint_Extraction.py" />
+    <Compile Include="sharepoint_extraction.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
