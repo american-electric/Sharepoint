@@ -9,11 +9,12 @@ import json
 from pathlib import Path
 import sys
 import getopt
+import shutil
 
 sharepointUri = 'http://sharepoint'
 baseUri = urllib.parse.urljoin(sharepointUri,'operations/solar/Shared%20Documents/Forms/AllItems.aspx')
 basicAuth = HTTPBasicAuth('HSI\\ajans','cH3wyM0ck!ngb!rd')
-dlRoot = 'C:/TEMP' #os.path.join(Path.home(),'HSI/AEC Alternative Energy - Documents')
+dlRoot = 'C:/TEMP'
 
 try:
   opts, args = getopt.getopt(sys.argv[1:],"hu:d:",["url=","dest="])
@@ -30,14 +31,14 @@ for opt, arg in opts:
      dlRoot = arg
 
 def download_file(url_path, basic_auth):
-    source = requests.get(urllib.parse.urljoin(sharepointUri, url_path), auth=basic_auth)
     filename = os.path.join(dlRoot, urllib.parse.unquote(url_path))
     print(filename)
     os.makedirs(filename.replace(filename.split('/')[-1],''), exist_ok=True)
     if not os.path.isfile(filename):
-        with open(filename, 'wb') as out_file:
-            out_file.write(source.content)
-        print("Download Complete!")
+        with requests.get(urllib.parse.urljoin(sharepointUri, url_path), auth=basic_auth, stream=True) as r:
+            with open(filename, 'wb') as f:
+                shutil.copyfileobj(r.content,f)
+                print("Download Complete!")
 
 def download_folder(url_path, basic_auth):
     source = requests.get(url_path, auth=basicAuth).text
