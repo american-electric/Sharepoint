@@ -37,8 +37,11 @@ def download_file(url_path, basic_auth):
     if not os.path.isfile(filename):
         with requests.get(urllib.parse.urljoin(sharepointUri, url_path), auth=basic_auth, stream=True) as r:
             with open(filename, 'wb') as f:
-                shutil.copyfileobj(r.content,f)
-                print("Download Complete!")
+                try:
+                    shutil.copyfileobj(r.content,f)
+                    print("Download Complete!")
+                except:
+                    print("Download Failed!!!")
 
 def download_folder(url_path, basic_auth):
     source = requests.get(url_path, auth=basicAuth).text
