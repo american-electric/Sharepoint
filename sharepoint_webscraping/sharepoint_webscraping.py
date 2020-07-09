@@ -13,7 +13,7 @@ import shutil
 
 sharepointUri = 'http://sharepoint'
 baseUri = urllib.parse.urljoin(sharepointUri,'operations/solar/Shared%20Documents/Forms/AllItems.aspx')
-basicAuth = HTTPBasicAuth('HSI\\ajans','cH3wyM0ck!ngb!rd')
+basicAuth = HTTPBasicAuth()
 dlRoot = 'C:/TEMP'
 
 try:
