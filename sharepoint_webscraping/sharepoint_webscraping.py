@@ -13,22 +13,27 @@ import shutil
 
 sharepointUri = 'http://sharepoint'
 baseUri = urllib.parse.urljoin(sharepointUri,'operations/solar/Shared%20Documents/Forms/AllItems.aspx')
-basicAuth = HTTPBasicAuth()
 dlRoot = 'C:/TEMP'
+usernm = ''
+passwd = ''
 
 try:
-  opts, args = getopt.getopt(sys.argv[1:],"hu:d:",["url=","dest="])
+  opts, args = getopt.getopt(sys.argv[1:],"hs:d:u:p:",["src=","dest=","username=","password="])
 except getopt.GetoptError:
-  print('sharepoint_webscraping.py -u <url> -d <destpath>')
+  print('sharepoint_webscraping.py -s <srcurl> -d <destpath> -u <username> -p <password>')
   sys.exit(2)
 for opt, arg in opts:
   if opt == '-h':
-     print('sharepoint_webscraping.py -u <url> -d <destpath>')
+     print('sharepoint_webscraping.py -s <srcurl> -d <destpath> -u <username> -p <password>')
      sys.exit()
-  elif opt in ("-u", "--url"):
+  elif opt in ("-s", "--src"):
      baseUri = arg
   elif opt in ("-d", "--dest"):
      dlRoot = arg
+  elif opt in ("-u", "--username"):
+     usernm = arg
+  elif opt in ("-p", "--password"):
+     passwd = arg
 
 def download_file(url_path, basic_auth):
     filename = os.path.join(dlRoot, urllib.parse.unquote(url_path))
@@ -44,7 +49,7 @@ def download_file(url_path, basic_auth):
                     print("Download Failed!!!")
 
 def download_folder(url_path, basic_auth):
-    source = requests.get(url_path, auth=basicAuth).text
+    source = requests.get(url_path, auth=basic_auth).text
     soup = BeautifulSoup(source, 'lxml')
     for docLink in soup.find_all('a', onfocus="OnLink(this)", href=True):
         href = docLink.get('href')
@@ -62,4 +67,4 @@ def download_folder(url_path, basic_auth):
         link = re.search('"(.*)"',nextLink.get('onclick'))
         download_folder(json.loads(link.group()),basic_auth)
 
-download_folder(baseUri, basicAuth)
+download_folder(baseUri, HTTPBasicAuth(usernm, passwd))
